@@ -1,23 +1,16 @@
 import pandas as pd
 
-if __name__ == '__main__':
-    degrees_2015 = pd.read_csv("C:\\Users\\Pam\\Dropbox\\Data\\FTF\\Fall2015\\nsf_ftf_degrees2.csv", low_memory=False)
-    degrees_2015 = degrees_2015[
-        (degrees_2015['degmaj1'].isin(['CS']) == True) | (degrees_2015['degmaj1'].isin(['ACS']) == True)]
-    # load degrees in 2015 that are only CS and ACS
+# dropout: students that show up in the students files in 2015 but not in the students file / degree file in 2016
+student2015 = pd.read_csv("C:\\Users\\Pam\\Dropbox\\Data\\FTF\\Fall2015\\nsf_ftf_student2.csv", low_memory=False)
+student2015.drop_duplicates('id', inplace=True)
 
-    degrees_2017 = pd.read_csv("C:\\Users\\Pam\\Dropbox\\Data\\FTF\\Fall2017\\nsf_ftf_degrees4.csv", low_memory=False)
-    degrees_2017 = degrees_2017[
-        (degrees_2017['degmaj1'].isin(['CS']) == True) | (degrees_2017['degmaj1'].isin(['ACS']) == True)]
-    # load degrees in 2017 that are only CS and ACS
+student2016 = pd.read_csv("C:\\Users\\Pam\\Dropbox\\Data\\FTF\\Fall2016\\nsf_ftf_student3.csv", low_memory=False)
+student2016.drop_duplicates('id', inplace=True)
 
-    degrees_2015 = degrees_2015.reset_index(drop=True)
-    degrees_2017 = degrees_2017.reset_index(drop=True)
-    # reset indicies for easier viewing
+student2017 = pd.read_csv("C:\\Users\\Pam\\Dropbox\\Data\\FTF\\Fall2017\\nsf_ftf_student4.csv", low_memory=False)
+student2017.drop_duplicates('id', inplace=True)
 
-    degree_drop = degrees_2015[degrees_2015["cohort"].isin(degrees_2017["cohort"])]
-    # check which ID's are the same
-    degree_drop = degree_drop.reset_index(drop=True)
-
-    # from here, you can either debug in Pycharm or print the dataframes to see the differences
-    print(degree_drop)
+dropout = student2015[(~student2015.id.isin(student2016.id)) & (~student2015.id.isin(student2017.id)) & ((student2015.PMAJR.isin(['CS'])==True) | (student2015.PMAJR.isin(['ACS'])==True))]
+#statement checks for: 2015 student ID's that are NOT in 2016/2017 & CS/ACS
+dropout = dropout.reset_index(drop=True)
+print(dropout)
