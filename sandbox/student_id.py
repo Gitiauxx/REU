@@ -1,5 +1,6 @@
 import pandas as pd
 import os
+import numpy as np
 
 DATA_FILE = './../data/FTF'
 
@@ -17,3 +18,7 @@ d2 = pd.read_csv(os.path.join(DATA_FILE, 'Fall2016/nsf_ftf_demographics3.csv'), 
 d3 = pd.read_csv(os.path.join(DATA_FILE, 'Fall2017/nsf_ftf_demographics4.csv'), low_memory=False)
 demo = pd.concat([d1, d2, d3]).set_index('id')
 print(len(demo))
+
+# how many can we merge?
+demo_student = student.join(demo, how='left')
+print(len(demo_student[(~np.isnan(demo_student.ENTRY_AGE))]))
