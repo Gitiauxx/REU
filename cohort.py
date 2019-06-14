@@ -37,6 +37,10 @@ cohort_2009_grad_2015 = degrees_2015[degrees_2015.GRADTERM.isin([201510,201540,2
 cohort_2009_grad_2016 = degrees_2016[degrees_2016.GRADTERM.isin([201610,201640,201670]) & degrees_2016.id.isin(cohort_2009.id) & ((degrees_2016.degmaj1=="CS") | (degrees_2016.degmaj1=="ACS") | (degrees_2016.degmaj2=="CS"))]
 cohort_2009_grad_2017 = degrees_2017[degrees_2017.GRADTERM.isin([201710,201740,201770]) & degrees_2017.id.isin(cohort_2009.id) & ((degrees_2017.degmaj1=="CS") | (degrees_2017.degmaj1=="ACS") | (degrees_2017.degmaj2=="CS"))]
 
+dropout_2009 = cohort_2009[(cohort_2009.PMAJR.isin(['CS','ACS'])==True) & ~cohort_2009.id.isin(degrees_2017.id)]
+#who dropped in 2009
+#important to put parenthesis around ==, or else & gets evaluated first
+
 '''
 People who graduated from 2010 cohort 
 '''
@@ -47,6 +51,9 @@ cohort_2010_grad_2015 = degrees_2015[degrees_2015.GRADTERM.isin([201510,201540,2
 cohort_2010_grad_2016 = degrees_2016[degrees_2016.GRADTERM.isin([201610,201640,201670]) & degrees_2016.id.isin(cohort_2010.id) & ((degrees_2016.degmaj1=="CS") | (degrees_2016.degmaj1=="ACS") | (degrees_2016.degmaj2=="CS"))]
 cohort_2010_grad_2017 = degrees_2016[degrees_2016.GRADTERM.isin([201610,201640,201670]) & degrees_2016.id.isin(cohort_2010.id) & ((degrees_2016.degmaj1=="CS") | (degrees_2016.degmaj1=="ACS") | (degrees_2016.degmaj2=="CS"))]
 
+dropout_2010 = cohort_2010[(cohort_2010.PMAJR.isin(['CS','ACS'])==True) & ~cohort_2010.id.isin(degrees_2017.id)]
+#who dropped in 2010
+
 '''
 People who graduated from 2011 cohort 
 '''
@@ -56,6 +63,8 @@ cohort_2011_grad_2015 = degrees_2015[degrees_2015.GRADTERM.isin([201510,201540,2
 cohort_2011_grad_2016 = degrees_2016[degrees_2016.GRADTERM.isin([201610,201640,201670]) & degrees_2016.id.isin(cohort_2011.id) & ((degrees_2016.degmaj1=="CS") | (degrees_2016.degmaj1=="ACS") | (degrees_2016.degmaj2=="CS"))]
 cohort_2011_grad_2017 = degrees_2017[degrees_2017.GRADTERM.isin([201710,201740,201770]) & degrees_2017.id.isin(cohort_2011.id) & ((degrees_2017.degmaj1=="CS") | (degrees_2017.degmaj1=="ACS") | (degrees_2017.degmaj2=="CS"))]
 
+dropout_2011 = cohort_2011[(cohort_2011.PMAJR.isin(['CS','ACS'])==True) & ~cohort_2011.id.isin(degrees_2017.id)]
+
 '''
 People who graduated from 2012 cohort
 '''
@@ -64,6 +73,8 @@ cohort_2012_grad_2015 = degrees_2015[degrees_2015.GRADTERM.isin([201510,201540,2
 cohort_2012_grad_2016 = degrees_2016[degrees_2016.GRADTERM.isin([201610,201640,201670]) & degrees_2016.id.isin(cohort_2012.id) & ((degrees_2016.degmaj1=="CS") | (degrees_2016.degmaj1=="ACS") | (degrees_2016.degmaj2=="CS"))]
 cohort_2012_grad_2017 = degrees_2017[degrees_2017.GRADTERM.isin([201710,201740,201770]) & degrees_2017.id.isin(cohort_2012.id) & ((degrees_2017.degmaj1=="CS") | (degrees_2017.degmaj1=="ACS") | (degrees_2017.degmaj2=="CS"))]
 
+dropout_2012 = cohort_2012[(cohort_2012.PMAJR.isin(['CS','ACS'])==True) & ~cohort_2012.id.isin(degrees_2017.id)]
+
 '''
 People who graduated from 2013 cohort
 '''
@@ -71,6 +82,7 @@ cohort_2013_grad_2015 = degrees_2015[degrees_2015.GRADTERM.isin([201510,201540,2
 cohort_2013_grad_2016 = degrees_2016[degrees_2016.GRADTERM.isin([201610,201640,201670]) & degrees_2016.id.isin(cohort_2013.id) & ((degrees_2016.degmaj1=="CS") | (degrees_2016.degmaj1=="ACS") | (degrees_2016.degmaj2=="CS"))]
 cohort_2013_grad_2017 = degrees_2017[degrees_2017.GRADTERM.isin([201710,201740,201770]) & degrees_2017.id.isin(cohort_2013.id) & ((degrees_2017.degmaj1=="CS") | (degrees_2017.degmaj1=="ACS") | (degrees_2017.degmaj2=="CS"))]
 
+dropout_2013 = cohort_2013[(cohort_2013.PMAJR.isin(['CS','ACS'])==True) & ~cohort_2013.id.isin(degrees_2017.id)]
 
 #degrees_2015[degrees_2015.id.isin(cohort_2012.id) & ((degrees_2015.degmaj1=="CS") | (degrees_2015.degmaj1=="ACS") | (degrees_2015.degmaj2=="CS"))]
 #cohort_2012_grad_2016 = degrees_2016[~degrees_2016.id.isin(cohort_2012_grad_2015.id) & degrees_2016.id.isin(cohort_2012.id) & ((degrees_2016.degmaj1=="CS") | (degrees_2016.degmaj1=="ACS") | (degrees_2016.degmaj2=="CS"))]
@@ -78,15 +90,12 @@ cohort_2013_grad_2017 = degrees_2017[degrees_2017.GRADTERM.isin([201710,201740,2
 
 #cohort_2012_grad_2017 = degrees_2017[degrees_2017.id.isin(cohort_2012.id) & (~degrees_2017.id.isin(cohort_2012_grad_2016.id)) & ((degrees_2017.degmaj1=="CS") | (degrees_2017.degmaj1=="ACS") | (degrees_2017.degmaj2=="CS"))]
 #cohort_2012_grad_2017 = cohort_2012_grad_2017.reset_index(drop=True)
-
 #cohort_2013_grad_2016 = degrees_2016[~degrees_2016.id.isin(cohort_2012_grad_2015.id) & ~degrees_2016.id.isin(cohort_2012_grad_2016.id) & degrees_2016.id.isin(cohort_2013.id) & ((degrees_2016.degmaj1=="CS") | (degrees_2016.degmaj1=="ACS") | (degrees_2016.degmaj2=="CS"))]
 
 #cohort_2013_grad_2016 = degrees_2016[degrees_2016.id.isin(cohort_2013.id) & ((degrees_2016.degmaj1=="CS") | (degrees_2016.degmaj1=="ACS") | (degrees_2016.degmaj2=="CS"))]
-
 #cohort_2013_grad_2016 = degrees_2016[degrees_2016.GRADTERM.isin([201610,201640,201670]) & degrees_2016.id.isin(cohort_2013.id) & ((degrees_2016.degmaj1=="CS") | (degrees_2016.degmaj1=="ACS") | (degrees_2016.degmaj2=="CS"))]
 
 #cohort_2013_grad_2017 = degrees_2017[~degrees_2017.id.isin(cohort_2013_grad_2016.id) & degrees_2017.id.isin(cohort_2013.id) & ((degrees_2017.degmaj1=="CS") | (degrees_2017.degmaj1=="ACS") | (degrees_2017.degmaj2=="CS"))]
 #print(cohort_2013_grad_2017.__len__())
-
 #print(degrees_2015.GRADTERM==201510,201540,201570)
 #cohort_2012_grad_2015 = degrees_2015[degrees_2015.GRADTERM.isin([201510,201540,201570]) & degrees_2015.id.isin(cohort_2012.id) & ((degrees_2015.degmaj1=="CS") | (degrees_2015.degmaj1=="ACS") | (degrees_2015.degmaj2=="CS"))]
