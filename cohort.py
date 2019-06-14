@@ -2,12 +2,15 @@ import pandas as pd
 
 student2015 = pd.read_csv("C:\\Users\\Pam\\Dropbox\\Data\\FTF\\Fall2015\\nsf_student12.csv", low_memory=False)
 student2015.drop_duplicates('id', inplace=True)
+student2015.drop(columns="ACAD_STDNG",inplace=True)
 
 student2016 = pd.read_csv("C:\\Users\\Pam\\Dropbox\\Data\\FTF\\Fall2016\\nsf_ftf_student3.csv", low_memory=False)
 student2016.drop_duplicates('id', inplace=True)
+student2016.drop(columns="ACAD_STDNG",inplace=True)
 
 student2017 = pd.read_csv("C:\\Users\\Pam\\Dropbox\\Data\\FTF\\Fall2017\\nsf_ftf_student4.csv", low_memory=False)
 student2017.drop_duplicates('id', inplace=True)
+student2017.drop(columns="acad_stdng",inplace=True)
 
 degrees_2015 = pd.read_csv("C:\\Users\\Pam\\Dropbox\\Data\\FTF\\Fall2015\\nsf_ftf_degrees2.csv", low_memory=False)
 degrees_2015.drop_duplicates('id', inplace=True)
@@ -41,6 +44,15 @@ dropout_2009 = cohort_2009[(cohort_2009.PMAJR.isin(['CS','ACS'])==True) & ~cohor
 #who dropped in 2009
 #important to put parenthesis around ==, or else & gets evaluated first
 
+merge_student_2009_2011 = pd.merge(cohort_2009_grad_2011, student2015, on='id')
+merge_student_2009_2012 = pd.merge(cohort_2009_grad_2012, student2015, on='id')
+merge_student_2009_2013 = pd.merge(cohort_2009_grad_2013, student2015, on='id')
+merge_student_2009_2014 = pd.merge(cohort_2009_grad_2014, student2015, on='id')
+merge_student_2009_2015 = pd.merge(cohort_2009_grad_2015, student2015, on='id')
+merge_student_2009_2016 = pd.merge(cohort_2009_grad_2016, student2015, on='id')
+merge_student_2009_2017 = pd.merge(cohort_2009_grad_2017, student2015, on='id')
+#merge GPA data with graduate cohort
+
 '''
 People who graduated from 2010 cohort 
 '''
@@ -54,6 +66,14 @@ cohort_2010_grad_2017 = degrees_2016[degrees_2016.GRADTERM.isin([201610,201640,2
 dropout_2010 = cohort_2010[(cohort_2010.PMAJR.isin(['CS','ACS'])==True) & ~cohort_2010.id.isin(degrees_2017.id)]
 #who dropped in 2010
 
+merge_student_2010_2012 = pd.merge(cohort_2010_grad_2012, student2015, on='id')
+merge_student_2010_2013 = pd.merge(cohort_2010_grad_2013, student2015, on='id')
+merge_student_2010_2014 = pd.merge(cohort_2009_grad_2014, student2015, on='id')
+merge_student_2010_2015 = pd.merge(cohort_2009_grad_2015, student2015, on='id')
+merge_student_2010_2016 = pd.merge(cohort_2010_grad_2016, student2016, on='id')
+merge_student_2010_2017 = pd.merge(cohort_2010_grad_2017, student2017, on='id')
+#merge GPA data with graduate cohort
+
 '''
 People who graduated from 2011 cohort 
 '''
@@ -65,15 +85,29 @@ cohort_2011_grad_2017 = degrees_2017[degrees_2017.GRADTERM.isin([201710,201740,2
 
 dropout_2011 = cohort_2011[(cohort_2011.PMAJR.isin(['CS','ACS'])==True) & ~cohort_2011.id.isin(degrees_2017.id)]
 
+merge_student_2011_2013 = pd.merge(cohort_2011_grad_2013, student2015, on='id')
+merge_student_2011_2014 = pd.merge(cohort_2011_grad_2014, student2015, on='id')
+merge_student_2011_2015 = pd.merge(cohort_2011_grad_2015, student2015, on='id')
+merge_student_2011_2016 = pd.merge(cohort_2011_grad_2016, student2016, on='id')
+merge_student_2011_2017 = pd.merge(cohort_2011_grad_2017, student2017, on='id')
+#merge GPA data with graduate cohort
+
 '''
 People who graduated from 2012 cohort
 '''
-cohort_2012_grad_2014 = degrees_2015[degrees_2015.GRADTERM.isin([201410,201440,201470]) & degrees_2015.id.isin(cohort_2014.id) & ((degrees_2015.degmaj1=="CS") | (degrees_2015.degmaj1=="ACS") | (degrees_2015.degmaj2=="CS"))]
+cohort_2012_grad_2014 = degrees_2015[degrees_2015.GRADTERM.isin([201410,201440,201470]) & degrees_2015.id.isin(cohort_2012.id) & ((degrees_2015.degmaj1=="CS") | (degrees_2015.degmaj1=="ACS") | (degrees_2015.degmaj2=="CS"))]
 cohort_2012_grad_2015 = degrees_2015[degrees_2015.GRADTERM.isin([201510,201540,201570]) & degrees_2015.id.isin(cohort_2012.id) & ((degrees_2015.degmaj1=="CS") | (degrees_2015.degmaj1=="ACS") | (degrees_2015.degmaj2=="CS"))]
 cohort_2012_grad_2016 = degrees_2016[degrees_2016.GRADTERM.isin([201610,201640,201670]) & degrees_2016.id.isin(cohort_2012.id) & ((degrees_2016.degmaj1=="CS") | (degrees_2016.degmaj1=="ACS") | (degrees_2016.degmaj2=="CS"))]
 cohort_2012_grad_2017 = degrees_2017[degrees_2017.GRADTERM.isin([201710,201740,201770]) & degrees_2017.id.isin(cohort_2012.id) & ((degrees_2017.degmaj1=="CS") | (degrees_2017.degmaj1=="ACS") | (degrees_2017.degmaj2=="CS"))]
 
 dropout_2012 = cohort_2012[(cohort_2012.PMAJR.isin(['CS','ACS'])==True) & ~cohort_2012.id.isin(degrees_2017.id)]
+
+merge_student_2012_2014 = pd.merge(cohort_2012_grad_2014, student2015, on='id')
+merge_student_2012_2015 = pd.merge(cohort_2012_grad_2015, student2015, on='id')
+merge_student_2012_2016 = pd.merge(cohort_2012_grad_2016, student2016, on='id')
+merge_student_2012_2017 = pd.merge(cohort_2012_grad_2017, student2017, on='id')
+#merge GPA data with graduate cohort
+
 
 '''
 People who graduated from 2013 cohort
@@ -83,6 +117,12 @@ cohort_2013_grad_2016 = degrees_2016[degrees_2016.GRADTERM.isin([201610,201640,2
 cohort_2013_grad_2017 = degrees_2017[degrees_2017.GRADTERM.isin([201710,201740,201770]) & degrees_2017.id.isin(cohort_2013.id) & ((degrees_2017.degmaj1=="CS") | (degrees_2017.degmaj1=="ACS") | (degrees_2017.degmaj2=="CS"))]
 
 dropout_2013 = cohort_2013[(cohort_2013.PMAJR.isin(['CS','ACS'])==True) & ~cohort_2013.id.isin(degrees_2017.id)]
+
+merge_student_2013_2015 = pd.merge(cohort_2013_grad_2015, student2015, on='id')
+merge_student_2013_2016 = pd.merge(cohort_2013_grad_2016, student2016, on='id')
+merge_student_2013_2017 = pd.merge(cohort_2013_grad_2017, student2017, on='id')
+#merge GPA data with graduate cohort
+
 
 #degrees_2015[degrees_2015.id.isin(cohort_2012.id) & ((degrees_2015.degmaj1=="CS") | (degrees_2015.degmaj1=="ACS") | (degrees_2015.degmaj2=="CS"))]
 #cohort_2012_grad_2016 = degrees_2016[~degrees_2016.id.isin(cohort_2012_grad_2015.id) & degrees_2016.id.isin(cohort_2012.id) & ((degrees_2016.degmaj1=="CS") | (degrees_2016.degmaj1=="ACS") | (degrees_2016.degmaj2=="CS"))]
