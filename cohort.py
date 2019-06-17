@@ -76,6 +76,7 @@ total_merged_2009 = pd.concat([merge_student_2009_2011,merge_student_2009_2012,m
 total_merged_2009 = pd.merge(total_merged_2009,demographics_2015,on='id')
 total_merged_2009 = total_merged_2009.merge(admissions_2015,on='id')
 
+
 dropout_2009 = cohort_2009[(cohort_2009.PMAJR.isin(['CS','ACS'])==True) & ~cohort_2009.id.isin(degrees_2017.id)]
 #dropout_2009.set_index("id",inplace=True) #make ID on the left side
 dropout_2009 = pd.merge(dropout_2009,demographics_2015,on='id')
@@ -176,20 +177,20 @@ dropout_2013 = cohort_2013[(cohort_2013.PMAJR.isin(['CS','ACS'])==True) & ~cohor
 dropout_2013 = pd.merge(dropout_2013,demographics_2015,on='id')
 dropout_2013 = dropout_2013.merge(admissions_2015,on='id')
 
+
 grad_export = pd.concat([total_merged_2009,total_merged_2010,total_merged_2011,total_merged_2012,total_merged_2013],axis=0,sort=True)
 grad_export.set_index("id",inplace=True)
+grad_export['dropout']=0
 grad_export.to_csv(r"C:\\Users\\Pam\\Documents\\REU\\GraduatedCS_Demographics_Students_Degrees_Admissions.csv")
-print(2)
+'''all students who have graduated from CS/ACS'''
 
-'''
-all students who have graduated from CS/ACS'''
 
-'''
 export_dropouts = pd.concat([dropout_2009,dropout_2010,dropout_2011,dropout_2012,dropout_2013],axis=0,sort=True)
 #export_dropouts = export_dropouts.reset_index(drop=True)
 export_dropouts.set_index("id",inplace=True)
-export_dropouts.to_csv(r"C:\\Users\\Pam\\Documents\\REU\\DropoutCS_Demographics_Students_Degrees_Admissions_1.csv")
-all students who have dropped from CS/ACS'''
+export_dropouts['dropout']=1
+export_dropouts.to_csv(r"C:\\Users\\Pam\\Documents\\REU\\DropoutCS_Demographics_Students_Degrees_Admissions.csv")
+#all students who have dropped from CS/ACS'''
 
 
 
