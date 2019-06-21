@@ -28,3 +28,8 @@ print(d_s.groupby('cohort_year').size())
 
 # for CS/ACS students
 print(d_s[d_s.degmaj1.isin(['CS', "ACS"])].groupby('cohort_year').size())
+
+# look at students that graduated within 4 years
+d_s['graduation_year'] = d_s.GRADTERM.apply(lambda x: int(str(x)[:4]))
+print(d_s[d_s.graduation_year - d_s.cohort_year <= 4].groupby('cohort_year').size())
+print(d_s[(d_s.graduation_year - d_s.cohort_year <= 4) & (d_s.degmaj1.isin(['CS', "ACS"]))].groupby('cohort_year').size())
