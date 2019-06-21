@@ -16,7 +16,6 @@ graduated.set_index('id',inplace = True)
 graduated = graduated.reset_index(drop=False)
 graduated.drop_duplicates('id', inplace = True)
 graduated['graduated'] = '1'
-print('Number of CS graduates on time:',len(graduated))
 graduated.to_csv('Graduated2013.csv')
 
 #Creates a csv with the # of students who began as CS/ACS major and ends up NOT graduating as CS/ACS major
@@ -30,7 +29,6 @@ notgraduated.set_index('id',inplace = True)
 notgraduated = notgraduated.reset_index(drop=False)
 notgraduated.drop_duplicates('id', inplace = True)
 notgraduated['graduated'] = '0'
-print('Number of CS majors who did not graduate on time:',len(notgraduated))
 notgraduated.to_csv('NotGraduated2013.csv')
 
 #Counts the number of dropouts from CS/ACS 2009 cohort
@@ -38,7 +36,6 @@ dropoutCS = pd.merge(degrees2015, admissions2015, on = 'id', how = 'left')
 dropoutCS = dropoutCS[(dropoutCS['cohort'].astype(str).str.contains('2009')) == True]
 dropoutCS = dropoutCS[(dropoutCS['cohort_pmajr'].astype(str).str.contains('CS')) == True]
 dropoutCS = dropoutCS[(dropoutCS['degmaj1'].astype(str).str.contains('CS')) == False]
-print('Dropout from CS count:',len(dropoutCS))
 dropoutCS.to_csv('DropoutCS2013.csv')
 
 #Merges the whole CS/ACS majors who graduated and didn't graduate on time
@@ -47,3 +44,8 @@ graduated = graduated.reset_index(drop=False)
 graduated.drop_duplicates('id', inplace = True)
 graduated.to_csv('2009_2013_MergedGraduates_NonGrad.csv')
 
+total = len(graduated) + len(notgraduated) + len(dropoutCS)
+print('Number of CS graduates on time:',len(graduated), '/',total)
+print('Number of CS majors who did not graduate on time:',len(notgraduated), '/',total)
+print('Dropout from CS count:',len(dropoutCS),'/',total)
+print('Overall # of CS students in cohort 2009:', total)
