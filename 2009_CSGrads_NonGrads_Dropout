@@ -41,7 +41,7 @@ dropoutCS = dropoutCS[(dropoutCS['degmaj1'].astype(str).str.contains('CS')) == F
 print('Dropout from CS count:',len(dropoutCS))
 dropoutCS.to_csv('DropoutCS2013.csv')
 
-#Merges the whole CS/ACS majors who graduates and didn't graduate on time
+#Merges the whole CS/ACS majors who graduated and didn't graduate on time
 graduated = graduated.append(notgraduated)
 graduated = graduated.reset_index(drop=False)
 graduated.drop_duplicates('id', inplace = True)
