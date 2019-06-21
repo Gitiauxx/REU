@@ -9,7 +9,7 @@ degrees0 = pd.read_csv(os.path.join(DATA_FILE, 'Fall2015/nsf_degrees12.csv'), us
 degrees_1 = pd.read_csv(os.path.join(DATA_FILE, 'Fall2015/nsf_ftf_degrees2.csv'), usecols=['id', 'cohort', 'GRADTERM', 'degmaj1'])
 degrees_2 = pd.read_csv(os.path.join(DATA_FILE, 'Fall2015/nsf_ftf_degrees2.csv'), usecols=['id', 'cohort', 'GRADTERM', 'degmaj1'])
 degrees_3 =  pd.read_csv(os.path.join(DATA_FILE, 'Fall2017/nsf_ftf_degrees4.csv'), usecols=['id', 'cohort', 'GRADTERM', 'degmaj1'])
-degrees = pd.concat([degrees0, degrees_2, degrees_1, degrees_3]).set_index('id')
+degrees = pd.concat([degrees0, degrees_2, degrees_1, degrees_3]).drop_duplicates('id').set_index('id')
 
 
 #students
