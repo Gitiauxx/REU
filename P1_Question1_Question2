@@ -1,0 +1,79 @@
+import pandas as pd
+import matplotlib.pyplot as plt
+import numpy as np
+
+#2 Merge demographics with all 4 portions
+
+demographics2016 = pd.read_csv('REU2016/nsf_ftf_demographics3.csv',low_memory=False)
+demographics2016_2 = pd.read_csv('REU2017/nsf_ftf_demographics4.csv',low_memory=False)
+
+DemogAnalysis = demographics2016.append(demographics2016_2)
+
+#cleanup REU2016 student to only CS with cohort 2016
+student2016_2 = pd.read_csv('REU2016/nsf_ftf_student3.csv',low_memory=False)
+student2016_2 = student2016_2[(student2016_2['cohort'].astype(str).str.contains('2016')) == True]
+student2016_2 = student2016_2[(student2016_2['cohort_pmajr'].astype(str).str.contains('CS')) == True]
+
+#cleanup REU2017 student to only CS with cohort 2016
+student2016 = pd.read_csv('REU2017/nsf_ftf_student4.csv',low_memory=False)
+student2016 = student2016[(student2016['cohort'].astype(str).str.contains('2016')) == True]
+student2016 = student2016[(student2016['cohort_pmajr'].astype(str).str.contains('CS')) == True]
+
+#merge both files
+GPADistribution = student2016.append(student2016_2) 
+MathCSGrade = student2016.append(student2016_2)
+
+#Question 1a (GPA after one year of admission as a CS major)
+GPADistribution = GPADistribution[(GPADistribution['TERMBNR'].astype(str).str.contains('2017')) == True]
+GPADistribution.drop_duplicates('id',inplace=True)
+GPADistribution.set_index('id', inplace = True)
+del GPADistribution['acad_stdng']
+del GPADistribution['PCOLL']
+del GPADistribution['cohort_pcoll']
+del GPADistribution['termgpa2']
+del GPADistribution['term_earn_hrs']
+del GPADistribution['PDEG']
+Q1csv = pd.merge(GPADistribution, DemogAnalysis, on = 'id')
+Q1csv.to_csv('P1_Question1/Q1_GPADistribution.csv')
+
+courses2016 = pd.read_csv('REU2016/nsf_ftf_courses3.csv',low_memory=False)
+courses2016_2 = pd.read_csv('REU2017/nsf_ftf_courses4.csv',low_memory=False)
+
+#merge courses with GPADistribution unique IDs
+MathCSDistribution = courses2016.append(courses2016_2)
+MathCSDistribution = MathCSDistribution[MathCSDistribution.DISC.isin(['CS','MATH']) == True]
+del MathCSDistribution['CRN']
+del MathCSDistribution['SECTNO']
+del MathCSDistribution['HRS']
+del MathCSDistribution['INSTR_FNAME']
+del MathCSDistribution['INSTR_LNAME']
+del MathCSDistribution['class']
+del MathCSDistribution['instr_tenure']
+del MathCSDistribution['instr_rank']
+del MathCSDistribution['TITLE']
+del MathCSDistribution['grdpts']
+del MathCSDistribution['CNUM']
+MathCSDistribution = MathCSDistribution.dropna(how='any')
+
+#Question 2a (GPA distribution in MATH/CS courses)
+Q1anew = pd.merge(GPADistribution, MathCSDistribution, on = 'id')
+del Q1anew['cohort_x']
+del Q1anew['TERMBNR_x']
+del Q1anew['TERMBNR_y']
+del Q1anew['cohort_y']
+Q1anew.set_index('id', inplace = True)
+Q2csv = pd.merge(Q1anew, DemogAnalysis, on = 'id')
+Q2csv.to_csv('P1_Question1/Q1_MATHCSGrade.csv')
+
+#Question 3a (How many are still CS majors after 1 year?)
+CSRetention = GPADistribution[(GPADistribution['PMAJR'].astype(str).str.contains('CS')) == True]
+CSAttrition = GPADistribution[(GPADistribution['PMAJR'].astype(str).str.contains('CS')) == False]
+print('CS majors admitted in 2016: ', len(GPADistribution))
+print('CS majors after 1 year: ', len(CSRetention),'/', len(GPADistribution))
+print('CS dropouts after 1 year: ', len(CSAttrition),'/', len(GPADistribution))
+Q3csv = pd.merge(CSRetention, DemogAnalysis, on = 'id')
+Q3csv.to_csv('P1_Question1/Q1_CSRetention.csv')
+
+#Quesion 4a (Which majors did they switch to? How many transferred out of mason?)
+Q4csv = pd.merge(CSAttrition, DemogAnalysis, on = 'id')
+Q4csv.to_csv('P1_Question1/Q1_CSDropoutMajors.csv')
