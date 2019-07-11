@@ -2,6 +2,10 @@ import pandas as pd
 from sklearn import preprocessing
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.ensemble import RandomForestClassifier
+from sklearn.ensemble import GradientBoostingClassifier
+from sklearn import preprocessing
+from sklearn.dummy import DummyClassifier
+from sklearn.model_selection import learning_curve, GridSearchCV
 from sklearn.cluster import KMeans
 from sklearn.model_selection import StratifiedKFold
 from sklearn import linear_model
@@ -26,16 +30,15 @@ from sklearn import svm
 from sklearn.ensemble import AdaBoostClassifier
 from sklearn.model_selection import cross_val_score, train_test_split
 
-data = pd.read_csv("/Users/abhi/Documents/REU/Final_Merged.csv")
+data = pd.read_csv("/Users/abhi/Documents/abhi_data/STEM_Grad_6_Years_new.csv")
 
-extra = pd.read_sas("/Users/abhi/Dropbox/nsf_ftf_admissions5.sas7bdat",encoding='latin-1')
-
+'''
 data = data[data.cohort != 201310]
 data = data[data.cohort != 201370]
 data = data[data.cohort != 201410]
 data = data[data.cohort != 201470]
 data = data[data.cohort != 201570]
-
+'''
 
 #data.cohort = data.cohort.astype(str)
 #data.TERMBNR = data.TERMBNR.astype(str)
@@ -57,9 +60,15 @@ new_data.rename(columns={'Median': 'Income'}, inplace=True)
 new_data['Income'] = new_data['Income'].astype(int)
 
 data=new_data.copy(deep=True)
-#'cohort','TERMBNR',
 data.drop(columns=['cohort','TERMBNR','cohort_pcoll','cohort_pmajr','Income','PMAJR','Permanent_Address_STATE','PCOLL',"Application_College"],inplace=True)
 
+def drop_numerical_outliers(df, z_thresh=3):
+   # Constrains will contain `True` or `False` depending on if it is a value below the threshold.
+   constrains = df.select_dtypes(include=[np.number]) \
+      .apply(lambda x: np.abs(stats.zscore(x)) < z_thresh, reduce=False) \
+      .all(axis=1)
+   # Drop (inplace) values set to be rejected
+   df.drop(df.index[~constrains], inplace=True)
 
 '''
 new_data.hist(column="Income")
@@ -85,13 +94,58 @@ else:
 
 exit(2)
 '''
+drop_numerical_outliers(data)
+
 
 X = data[data.columns[:-1]]
-X.drop(columns="id",inplace=True)
+X.drop(columns=["id"],inplace=True)
+
 X = pd.get_dummies(X)
 esc = KBinsDiscretizer(n_bins=10, encode='ordinal', strategy='uniform')
 X = esc.fit_transform(X)
 y = data.iloc[:,-1]
+
+
+#min_max_scaler = preprocessing.MinMaxScaler(feature_range=(0,1))
+#X = min_max_scaler.fit_transform(X)
+
+'''
+X = preprocessing.normalize(X,norm='l2')
+#X = preprocessing.scale(X)
+#k_neighbor =  RandomForestClassifier(n_estimators = 1000, random_state = 42)
+k_neighbor = RandomForestClassifier(n_estimators = 1000, random_state = 42,max_depth=6)
+scores = model_selection.cross_validate(k_neighbor, X, y, cv=5, return_train_score=True,scoring='f1')
+print('Train scores:')
+print(scores['train_score'])
+print('Test scores:')
+print(scores['test_score'])
+exit(2)
+'''
+
+'''
+X_train, X_test, y_train, y_test = train_test_split(X, y, random_state=0)
+dummy_classifier = DummyClassifier(strategy="stratified")
+dummy_classifier.fit(X_train,y_train)
+#print(f1_score(y_test, dummy_classifier.predict(X_test),average='micro'))
+results = cross_val_score(dummy_classifier,X,y,cv=5,scoring='f1_macro')
+print(results.mean())
+
+#print(dummy_classifier.score(X_test,y_test))
+exit(2)
+'''
+
+'''
+rfc = RandomForestClassifier()
+
+param_grid = dict(n_estimators=range(1,10000),max_depth=range(1,10000))
+
+CV_rfc = GridSearchCV(estimator=rfc, param_grid=param_grid,cv= 5)
+CV_rfc.fit(X, y)
+print (CV_rfc.best_params_)
+print(CV_rfc.best_score_)
+exit(2)
+'''
+
 
 '''
 random_forest = RandomForestClassifier(n_estimators=1000)
@@ -110,14 +164,14 @@ feature_importances = pd.DataFrame(forest.feature_importances_,
                                    index = xTrain.columns,
                                     columns=['importance']).sort_values('importance',                                                                 ascending=False)
 print(feature_importances.head(10))
-#exit(2)
+exit(2)
 '''
 
 import warnings
 warnings.filterwarnings('ignore')  # "error", "ignore", "always", "default", "module" or "once"
 # prepare models
 models = []
-models.append(('Nearest Neighbors', KNeighborsClassifier(5)))
+models.append(('Nearest Neighbors', KNeighborsClassifier(n_neighbors=29,weights='distance')))
 models.append(('Linear SVM', SVC(kernel='linear', C=0.025)))
 models.append(('Decision Tree',  DecisionTreeClassifier(max_depth=5)))
 models.append(('Random Forest', RandomForestClassifier(n_estimators = 1000, random_state = 42)))
@@ -127,13 +181,13 @@ models.append(('Naive Bayes', GaussianNB()))
 models.append(('SGD Classifier', linear_model.SGDClassifier(max_iter=1000, tol=1e-3)))
 models.append(('LogisticRegressionCV', linear_model.LogisticRegressionCV(cv=5,max_iter=60000)))
 models.append(('K-means',KMeans(n_clusters=2)))
+models.append(('Gradient-Boost',GradientBoostingClassifier()))
 
 # evaluate each model in turn
 results = []
 names = []
-scoring = 'f1_weighted'
+scoring = 'f1_macro'
 for name, model in models:
-   kfold = model_selection.StratifiedKFold(n_splits=10, random_state=7)
    cv_results = model_selection.cross_val_score(model, X, y, cv=5, scoring=scoring)
    results.append(cv_results)
    names.append(name)
@@ -147,7 +201,6 @@ ax = fig.add_subplot(111)
 plt.boxplot(results)
 ax.set_xticklabels(names)
 #plt.show()
-
 
 '''
 predict = neigh.predict(xTest)

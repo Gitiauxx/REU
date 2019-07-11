@@ -1,4 +1,6 @@
 import pandas as pd
+import operator
+import re
 
 student2015 = pd.read_csv("/Users/abhi/Dropbox/Data/FTF/Fall2015/nsf_ftf_student2.csv", low_memory=False)
 student2015.drop(columns="ACAD_STDNG",inplace=True)
@@ -73,6 +75,15 @@ admissions_2017 = admissions_2017.drop(["cohort","Entry_Student_Type","Permanent
 admissions_total = pd.concat([admissions_2015,admissions_2016,admissions_2017])
 admissions_total.drop_duplicates('id',inplace=True)
 
+deg_majors = ['ANTH', 'AIT', 'EDAT', 'ASTR', 'BIOD', 'BENG', 'BINF',
+               'BIOL', 'BMED', 'BIOS', 'CHEM', 'CEIE', 'CDS', 'CSI',
+               'CSS', 'CFRS', 'GAME', 'CS', 'CYSE', 'DAEN', 'ECON', 'EDEP', 'EDIT',
+               'ECE', 'ENGR', 'EVPP', 'EFHP', 'FRSC', 'GGS', 'GEOL', 'GCH', 'HAP', 'HHS',
+               'HEAL', 'Science/Math', 'ISA', 'INFS', 'IT', 'KINE', 'LING', 'MIS', 'MSEC',
+               'MATH', 'ME', 'MLAB', 'MLSC', 'NEUR', 'NURS', 'NUTR', 'PHIL', 'PHYS', 'PSYC',
+               'RHBS', 'SPSY', 'SOAN', 'SOCI', 'SWE', 'STAT', 'SYST', 'SEOR', 'TECM', 'VSE']
+
+
 '''
 People who graduated from 2009 cohort
 '''
@@ -85,7 +96,7 @@ year_2014 = [201410,201440,201470]
 year_2015 = [201510,201540,201570]
 year_2016 = [201610,201640,201670]
 year_2017 = [201710,201740,201770]
-deg_majors = ['CS','ACS']
+#deg_majors = ['CS','ACS']
 
 
 degree_cohort_2009 = degrees_total.cohort.isin(year_2009)
@@ -111,7 +122,10 @@ deg_major2 = degrees_total.degmaj2.isin(deg_majors)
 
 
 
-cohort_2009_grad_2011 = degrees_total[(deg_major1 | deg_major2) & (degree_cohort_2009 & grad_2011)]
+#cohort_2009_grad_2011 = degrees_total[(deg_major1 | deg_major2) & (degree_cohort_2009 & grad_2011)]
+
+
+cohort_2009_grad_2011 = degrees_total[operator.or_(deg_major1,deg_major2) & operator.and_(degree_cohort_2009,grad_2011)]
 cohort_2009_grad_2012 = degrees_total[(deg_major1 | deg_major2) & (degree_cohort_2009 & grad_2012)]
 cohort_2009_grad_2013 = degrees_total[(deg_major1 | deg_major2) & (degree_cohort_2009 & grad_2013)]
 cohort_2009_grad_2014 = degrees_total[(deg_major1 | deg_major2) & (degree_cohort_2009 & grad_2014)]
@@ -120,11 +134,11 @@ cohort_2009_grad_2015 = degrees_total[(deg_major1 | deg_major2) & (degree_cohort
 cohort_2009_grad_2016 = degrees_total[(deg_major1 | deg_major2) & (degree_cohort_2009 & grad_2016)]
 cohort_2009_grad_2017 = degrees_total[(deg_major1 | deg_major2) & (degree_cohort_2009 & grad_2017)]
 
-grad_2009_total = pd.concat([cohort_2009_grad_2011,cohort_2009_grad_2012,cohort_2009_grad_2013], axis=0, sort=True)
+grad_2009_total = pd.concat([cohort_2009_grad_2011,cohort_2009_grad_2012,cohort_2009_grad_2013,cohort_2009_grad_2014,cohort_2009_grad_2015], axis=0, sort=True)
 
-#dropout_2009 = cohort_2009[(cohort_2009.cohort_pmajr.isin(['CS','ACS'])==True) & ~cohort_2009.id.isin(degrees_total.id)]
+dropout_2009 = cohort_2009[cohort_2009.cohort_pmajr.isin(deg_majors) & ~cohort_2009.id.isin(degrees_total)]
 
-dropout_2009 = cohort_2009[cohort_2009.cohort_pmajr.isin(deg_majors) & ~cohort_2009.id.isin(grad_2009_total.id)]
+#dropout_2009 = cohort_2009[cohort_2009.cohort_pmajr.isin(deg_majors) & ~cohort_2009.id.isin(grad_2009_total.id)]
 
 
 #who dropped in 2009
@@ -142,12 +156,12 @@ cohort_2010_grad_2015 = degrees_total[(deg_major1 | deg_major2) & (degree_cohort
 cohort_2010_grad_2016 = degrees_total[(deg_major1 | deg_major2) & (degree_cohort_2010 & grad_2016)]
 cohort_2010_grad_2017 = degrees_total[(deg_major1 | deg_major2) & (degree_cohort_2010 & grad_2017)]
 
-grad_2010_total = pd.concat([cohort_2010_grad_2012,cohort_2010_grad_2013,cohort_2010_grad_2014],axis=0,sort=True) #cohort_2010_grad_2015,cohort_2010_grad_2016,cohort_2010_grad_2017])
+grad_2010_total = pd.concat([cohort_2010_grad_2012,cohort_2010_grad_2013,cohort_2010_grad_2014,cohort_2010_grad_2015,cohort_2010_grad_2016],axis=0,sort=True) #cohort_2010_grad_2015,cohort_2010_grad_2016,cohort_2010_grad_2017])
 grad_2010_total = grad_2010_total.reset_index(drop=True)
 
-#dropout_2010 = cohort_2010[(cohort_2010.cohort_pmajr.isin(['CS','ACS'])==True) & ~cohort_2010.id.isin(degrees_total.id)]
+dropout_2010 = cohort_2010[cohort_2010.cohort_pmajr.isin(deg_majors) & ~cohort_2010.id.isin(degrees_total)]
 
-dropout_2010 = cohort_2010[(cohort_2010.cohort_pmajr.isin(['CS','ACS'])==True) & ~cohort_2010.id.isin(grad_2010_total.id)]
+#dropout_2010 = cohort_2010[cohort_2010.cohort_pmajr.isin(deg_majors) & ~cohort_2010.id.isin(grad_2010_total.id)]
 
 
 
@@ -156,9 +170,6 @@ dropout_2010 = cohort_2010[(cohort_2010.cohort_pmajr.isin(['CS','ACS'])==True) &
 '''
 People who graduated from 2011 cohort 
 '''
-
-
-
 cohort_2011_grad_2013 = degrees_total[(deg_major1 | deg_major2) & (degree_cohort_2011 & grad_2013)]
 cohort_2011_grad_2014 = degrees_total[(deg_major1 | deg_major2) & (degree_cohort_2011 & grad_2014)]
 cohort_2011_grad_2015 = degrees_total[(deg_major1 | deg_major2) & (degree_cohort_2011 & grad_2015)]
@@ -166,12 +177,14 @@ cohort_2011_grad_2015 = degrees_total[(deg_major1 | deg_major2) & (degree_cohort
 cohort_2011_grad_2016 = degrees_total[(deg_major1 | deg_major2) & (degree_cohort_2011 & grad_2016)]
 cohort_2011_grad_2017 = degrees_total[(deg_major1 | deg_major2) & (degree_cohort_2011 & grad_2017)]
 
-grad_2011_total = pd.concat([cohort_2011_grad_2013,cohort_2011_grad_2014,cohort_2011_grad_2015],axis=0,sort=True) #cohort_2011_grad_2016,cohort_2011_grad_2017])
+grad_2011_total = pd.concat([cohort_2011_grad_2013,cohort_2011_grad_2014,cohort_2011_grad_2015,cohort_2011_grad_2016,cohort_2011_grad_2017],axis=0,sort=True) #cohort_2011_grad_2016,cohort_2011_grad_2017])
 grad_2011_total = grad_2011_total.reset_index(drop=True)
 
 #dropout_2011 = cohort_2011[(cohort_2011.cohort_pmajr.isin(['CS','ACS'])==True) & ~cohort_2011.id.isin(degrees_total.id)]
 
-dropout_2011 = cohort_2011[(cohort_2011.cohort_pmajr.isin(['CS','ACS'])==True) & ~cohort_2011.id.isin(grad_2011_total.id)]
+dropout_2011 = cohort_2011[cohort_2011.cohort_pmajr.isin(deg_majors) & ~cohort_2011.id.isin(degrees_total)]
+
+#dropout_2011 = cohort_2011[cohort_2011.cohort_pmajr.isin(deg_majors) & ~cohort_2011.id.isin(grad_2011_total.id)]
 
 
 '''
@@ -186,10 +199,9 @@ cohort_2012_grad_2017 = degrees_total[(deg_major1 | deg_major2) & (degree_cohort
 
 grad_2012_total = pd.concat([cohort_2012_grad_2014,cohort_2012_grad_2015,cohort_2012_grad_2016],axis=0,sort=True)#cohort_2012_grad_2017],axis=0,sort=True)
 
-#dropout_2012 = cohort_2012[(cohort_2012.cohort_pmajr.isin(['CS','ACS'])==True) & ~cohort_2012.id.isin(degrees_total.id)]
+#dropout_2012 = cohort_2012[(cohort_2012.cohort_pmajr.isin(['CS','ACS'])==True) & ~cohort_2012.id.isin(grad_2012_total.id)]
 
-dropout_2012 = cohort_2012[(cohort_2012.cohort_pmajr.isin(['CS','ACS'])==True) & ~cohort_2012.id.isin(grad_2012_total.id)]
-
+dropout_2012 = cohort_2012[cohort_2012.cohort_pmajr.isin(deg_majors) & ~cohort_2012.id.isin(degrees_total)]
 
 
 '''
@@ -202,10 +214,10 @@ cohort_2013_grad_2017 = degrees_total[(deg_major1 | deg_major2) & (degree_cohort
 grad_2013_total = pd.concat([cohort_2013_grad_2015,cohort_2013_grad_2016,cohort_2013_grad_2017],axis=0,sort=True)
 
 #dropout_2013 = cohort_2013[(cohort_2013.cohort_pmajr.isin(['CS','ACS'])==True) & ~cohort_2013.id.isin(degrees_total.id)]
+
 #dropout_2013 = cohort_2013[(cohort_2013.cohort_pmajr.isin(['CS','ACS'])==True) & ~cohort_2013.id.isin(grad_2013_total.id)]
 
-dropout_2013 = cohort_2013[(cohort_2013.cohort_pmajr.isin(['CS','ACS'])==True) & ~cohort_2013.id.isin(grad_2013_total.id)]
-
+dropout_2013 = cohort_2013[cohort_2013.cohort_pmajr.isin(deg_majors) & ~cohort_2013.id.isin(degrees_total)]
 
 
 '''
@@ -218,7 +230,7 @@ cohort_2014_grad_2017 = degrees_total[(degrees_total.GRADTERM.isin([201710,20174
 
 #dropout_2014 = cohort_2014[(cohort_2014.cohort_pmajr.isin(['CS','ACS'])==True) & ~cohort_2014.id.isin(grad_2014_total)]
 
-grad_export = pd.concat([grad_2009_total,grad_2010_total,grad_2011_total,grad_2012_total,grad_2013_total],axis=0,sort=True) #,grad_2014_total],axis=0,sort=True)
+grad_export = pd.concat([grad_2009_total,grad_2010_total,grad_2011_total],axis=0,sort=True) #,grad_2014_total],axis=0,sort=True)
 students_total = students_total.drop(["cohort","cohort_pmajr","cohort_pcoll"],axis=1)
 grad_export = grad_export.merge(students_total,on='id')
 grad_export = grad_export.merge(demographics_total,on='id')
@@ -238,8 +250,8 @@ grad_export.drop(columns="degminor1",inplace=True)
 grad_export.drop(columns="degminor2",inplace=True)
 grad_export.drop(columns="termgpa2",inplace=True)
 
-grad_export['cohort_year'] = grad_export.cohort.apply(lambda x: int(str(x)[:4]))
-print(grad_export.groupby('cohort_year').size())
+#grad_export['cohort_year'] = grad_export.cohort.apply(lambda x: int(str(x)[:4]))
+#print(grad_export.groupby('cohort_year').size())
 
 #grad_export.to_csv(r"/Users/abhi/Documents/REU/grad_removed_columns.csv")
 
@@ -248,7 +260,7 @@ print(grad_export.groupby('cohort_year').size())
 #all students who have graduated from CS/ACS
 
 
-export_dropouts = pd.concat([dropout_2009,dropout_2010,dropout_2011,dropout_2012,dropout_2013],axis=0,sort=True)
+export_dropouts = pd.concat([dropout_2009,dropout_2010,dropout_2011],axis=0,sort=True)
 export_dropouts = export_dropouts.reset_index(drop=True)
 
 export_dropouts = export_dropouts.merge(demographics_total,on='id')
@@ -265,11 +277,11 @@ export_final = export_final.dropna(how='any')
 export_final.drop_duplicates('id',inplace=True)
 export_final.set_index('id',inplace=True)
 
-export_dropouts['cohort_year'] = export_dropouts.cohort.apply(lambda x: int(str(x)[:4]))
-print(export_dropouts.groupby('cohort_year').size())
+#export_dropouts['cohort_year'] = export_dropouts.cohort.apply(lambda x: int(str(x)[:4]))
+#print(export_dropouts.groupby('cohort_year').size())
 
 
-#export_final.to_csv(r"/Users/abhi/Documents/REU/Final_Merged.csv")
+export_final.to_csv(r"/Users/abhi/Documents/abhi_data/STEM_Grad_6_Years_new.csv")
 
 
 exit(2)
